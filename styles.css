@@ -44,11 +44,20 @@ body.light-mode {
     --bg-surface: #FFFFFF;
     --text-main: #0A1120;
     --text-muted: #5C6E8A;
-    --accent-glow: rgba(249, 161, 209, 0.8);
+    
+    /* ⬇️ NEW: Deeper, saturated accents for better contrast ⬇️ */
+    --accent-primary: #D81B60; /* A punchy, vibrant magenta/pink */
+    --accent-secondary: #1976D2; /* A crisp, bold royal blue */
+    
+    /* Update the glow to match the new primary color */
+    --accent-glow: rgba(216, 27, 96, 0.4); 
 }
+
 body.light-mode .premium-nav.scrolled {
-    background: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(216, 27, 96, 0.2);
 }
 body.light-mode .portal-card, body.light-mode .phase-card, body.light-mode .faq-question {
     background: #FFFFFF;
@@ -311,3 +320,534 @@ img, .card-bg, .team-img, .blob { -webkit-user-drag: none; -khtml-user-drag: non
 .modal-sticky-header .close-btn { padding: 15px; margin: -15px -15px 0 0; cursor: pointer; position: relative; z-index: 100; }
 .close-btn i, .modal-register i { pointer-events: none; }
 .modal-register { display: inline-block; width: 100%; text-align: center; position: relative; z-index: 100; }
+/* =========================================
+   LIGHT MODE OVERRIDES: COMPONENTS
+   ========================================= */
+
+/* 1. COUNTDOWN TIMER FIX */
+body.light-mode .time-box {
+    background: #FFFFFF;
+    border: 1px solid rgba(25, 118, 210, 0.2); /* Soft blue border */
+    box-shadow: 0 10px 25px rgba(25, 118, 210, 0.1); /* Soft blue shadow */
+    backdrop-filter: none;
+}
+body.light-mode .time-box span {
+    color: var(--accent-primary); /* Magenta numbers */
+}
+body.light-mode .time-box p {
+    color: var(--accent-secondary); /* Blue labels */
+    font-weight: 700;
+}
+body.light-mode .colon {
+    color: var(--text-muted); /* Softer colons */
+}
+
+/* 2. COMMITTEE CARDS FIX */
+body.light-mode .comm-card {
+    border: 1px solid rgba(25, 118, 210, 0.15);
+    box-shadow: 0 15px 35px rgba(10, 17, 32, 0.05);
+}
+body.light-mode .card-bg {
+    filter: grayscale(10%) brightness(0.9); /* Brighter base images */
+}
+body.light-mode .comm-card:hover .card-bg {
+    filter: grayscale(0%) brightness(1.05); /* Full color on hover */
+}
+body.light-mode .card-content {
+    /* Replace harsh black gradient with a clean white fade */
+    background: linear-gradient(to top, rgba(255, 255, 255, 1) 15%, rgba(255, 255, 255, 0));
+}
+body.light-mode .card-content h3 {
+    color: var(--accent-primary);
+    text-shadow: none;
+}
+body.light-mode .card-content p {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* 3. FOOTER COLOR INJECTION */
+body.light-mode .footer {
+    background: linear-gradient(to bottom, #FFFFFF, #F4F7FB);
+    border-top: 2px solid rgba(216, 27, 96, 0.2); /* Subtle magenta top border */
+}
+body.light-mode .footer-link {
+    background: rgba(25, 118, 210, 0.05); /* Tinted blue background */
+    border-color: rgba(25, 118, 210, 0.2);
+    color: var(--accent-secondary) !important;
+    font-weight: 600;
+}
+body.light-mode .footer-link i {
+    color: var(--accent-primary);
+}
+body.light-mode .footer-link:hover {
+    background: var(--accent-primary); /* Solid magenta on hover */
+    color: #FFFFFF !important;
+    border-color: var(--accent-primary);
+    box-shadow: 0 5px 15px var(--accent-glow);
+}
+body.light-mode .footer-link:hover i {
+    color: #FFFFFF;
+}
+/* =========================================
+   SLOT-BASED REGISTRATION PHASES
+   ========================================= */
+
+/* Replace the old phase-date styling */
+.phase-slots {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+/* Status Badges for FOMO */
+.status-tag {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Phase 1: Sold Out State */
+.sold-out {
+    opacity: 0.5;
+    filter: grayscale(100%);
+    pointer-events: none;
+}
+.sold-out .status-tag {
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+    border: 1px solid rgba(255, 77, 77, 0.3);
+}
+.sold-out h2 {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+/* Phase 2: Active State */
+.active-phase .status-tag.live {
+    background: rgba(249, 161, 209, 0.15); /* Pastel pink base */
+    color: var(--accent-primary);
+    border: 1px solid var(--accent-primary);
+    animation: pulse 2s infinite; /* Reusing your existing pulse animation */
+}
+body.light-mode .active-phase .status-tag.live {
+    background: rgba(216, 27, 96, 0.1); /* Deeper magenta for light mode */
+}
+
+/* Phase 3: Locked State */
+.locked-phase .status-tag {
+    background: rgba(143, 160, 181, 0.1);
+    color: var(--text-muted);
+    border: 1px solid rgba(143, 160, 181, 0.3);
+}
+/* =========================================
+   UPGRADED: WHY PYS SECTION (BENTO UI)
+   ========================================= */
+.why-pys-section {
+    padding: 100px 10%;
+    background: var(--bg-dark);
+}
+
+/* Intro Glass Panel */
+.intro-glass-panel {
+    max-width: 900px;
+    margin: 0 auto 4rem auto;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(161, 196, 240, 0.15);
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+.intro-glass-panel:hover {
+    transform: translateY(-5px);
+}
+.quote-icon {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-dark);
+    color: var(--accent-primary);
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-primary);
+}
+.lead-text {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+.sub-text {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+/* Bento Layout */
+.bento-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+}
+.bento-title {
+    font-family: var(--font-head);
+    font-size: 2rem;
+    color: var(--text-main);
+    margin-bottom: 2rem;
+}
+
+/* Feature Chips (Left Column) */
+.feature-chip-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.feat-chip {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 12px 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+.feat-chip:hover {
+    background: rgba(249, 161, 209, 0.08);
+    border-color: rgba(249, 161, 209, 0.3);
+    transform: translateX(10px);
+}
+.icon-box {
+    background: rgba(161, 196, 240, 0.1);
+    color: var(--accent-secondary);
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.feat-chip span {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 500;
+}
+.feat-chip:hover span { color: var(--text-main); }
+
+/* Experience Cards (Right Column) */
+.exp-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(161, 196, 240, 0.1);
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.exp-card.elevated:hover {
+    transform: translateY(-5px);
+    border-color: rgba(161, 196, 240, 0.3);
+}
+.icon-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.pink-glow { background: rgba(249, 161, 209, 0.15); color: var(--accent-primary); }
+.blue-glow { background: rgba(161, 196, 240, 0.15); color: var(--accent-secondary); }
+.white-glow { background: rgba(255, 255, 255, 0.2); color: #FFF; }
+
+.exp-card p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+/* The Grand Conclusion Card */
+.highlight-card {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border: none;
+    color: var(--bg-dark);
+}
+.highlight-card p {
+    color: var(--bg-dark);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* =========================================
+   LIGHT MODE OVERRIDES FOR BENTO UI
+   ========================================= */
+body.light-mode .intro-glass-panel {
+    background: #FFFFFF;
+    border: 1px solid rgba(25, 118, 210, 0.15);
+    box-shadow: 0 15px 35px rgba(25, 118, 210, 0.05);
+}
+body.light-mode .quote-icon {
+    background: #FFFFFF;
+}
+body.light-mode .feat-chip {
+    background: #FFFFFF;
+    border: 1px solid rgba(25, 118, 210, 0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+body.light-mode .feat-chip:hover {
+    background: #FFFFFF;
+    border-color: var(--accent-primary);
+    box-shadow: 0 8px 20px rgba(216, 27, 96, 0.1);
+}
+body.light-mode .icon-box {
+    background: rgba(25, 118, 210, 0.08);
+}
+body.light-mode .exp-card.elevated {
+    background: #FFFFFF;
+    border: 1px solid rgba(25, 118, 210, 0.1);
+    box-shadow: 0 10px 25px rgba(25, 118, 210, 0.05);
+}
+body.light-mode .highlight-card p {
+    color: #FFFFFF;
+}
+body.light-mode .highlight-card .white-glow {
+    color: var(--accent-primary);
+    background: #FFFFFF;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+    .bento-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .intro-glass-panel { padding: 30px 20px; }
+}
+/* =========================================
+   FULL WIDTH CONCLUSION & STATS
+   ========================================= */
+
+/* The Grand Conclusion Banner */
+.grand-conclusion {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 16px;
+    padding: 40px 50px;
+    margin-top: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.grand-conclusion .icon-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+    flex-shrink: 0;
+}
+
+.grand-conclusion p {
+    color: var(--bg-dark);
+    font-family: var(--font-head);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Stats Grid Restore */
+.stats-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6rem;
+    margin-top: 5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 4rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item h3 {
+    font-family: var(--font-head);
+    font-size: 5rem;
+    color: var(--accent-secondary);
+    line-height: 1;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.stat-item p {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Light Mode Overrides */
+body.light-mode .grand-conclusion {
+    box-shadow: 0 15px 35px rgba(25, 118, 210, 0.15);
+}
+body.light-mode .grand-conclusion p {
+    color: #FFFFFF; /* Ensures text stays white against the vibrant light mode gradient */
+}
+body.light-mode .stats-grid {
+    border-top: 1px solid rgba(25, 118, 210, 0.15);
+}
+/* The stats will automatically pull the crisp #1976D2 blue from your light mode var(--accent-secondary) */
+
+/* Mobile Fixes for the new banner */
+@media (max-width: 768px) {
+    .grand-conclusion {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+        gap: 20px;
+    }
+    .stats-grid {
+        gap: 3rem;
+    }
+    .stat-item h3 {
+        font-size: 4rem;
+    }
+}
+/* =========================================
+   EXECUTIVE BOARD MODAL AVATARS
+   ========================================= */
+.eb-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 10px auto;
+    border: 2px solid var(--accent-primary);
+    box-shadow: 0 4px 15px rgba(249, 161, 209, 0.2);
+}
+/* =========================================
+   MODAL FOOTER BUTTON FIX
+   ========================================= */
+.modal-footer {
+    display: flex;
+    justify-content: center; /* Centers the button horizontally */
+}
+
+.modal-register {
+    width: auto !important; /* Overrides the previous 100% width */
+    min-width: 280px; /* Gives it a solid, clickable size */
+    padding: 14px 30px;
+}
+
+/* Ensure light mode border looks clean too */
+body.light-mode .modal-footer {
+    border-top: 1px solid rgba(25, 118, 210, 0.15) !important;
+}
+/* Light Mode Adjustments */
+body.light-mode .team-card {
+    border: 1px solid rgba(25, 118, 210, 0.3);
+    box-shadow: 0 15px 35px rgba(25, 118, 210, 0.1);
+    background: var(--bg-dark); /* Keeps the card background dark if an image fails to load */
+}
+
+body.light-mode .team-card:hover {
+    box-shadow: -15px 15px 35px rgba(25, 118, 210, 0.15), 15px 15px 35px rgba(216, 27, 96, 0.15);
+}
+
+/* ⬇️ THE CRITICAL FIX: Lock the overlay to a dark gradient so it blends ⬇️ */
+body.light-mode .team-overlay {
+    background: linear-gradient(to top, rgba(7, 9, 19, 1) 0%, rgba(7, 9, 19, 0.85) 60%, transparent 100%);
+}
+
+body.light-mode .team-overlay h3 { 
+    color: #FFFFFF; /* Force text to stay white */
+}
+
+body.light-mode .team-overlay h4 {
+    color: var(--accent-primary); /* Force subtitle to stay magenta */
+}
+
+body.light-mode .team-overlay p {
+    color: #A1C4F0; /* Force quote to stay pastel blue */
+}
+/* =========================================
+   SECRETARIAT EXPANSION LOGIC
+   ========================================= */
+
+/* The Reveal Trigger Card */
+.reveal-more-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.05), rgba(216, 27, 96, 0.05));
+    border: 2px dashed rgba(249, 161, 209, 0.3);
+    cursor: pointer;
+    text-align: center;
+}
+
+.reveal-more-card:hover {
+    border: 2px solid var(--accent-primary);
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.1), rgba(216, 27, 96, 0.1));
+}
+
+.reveal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s ease;
+}
+
+.reveal-more-card:hover .reveal-content {
+    transform: scale(1.05);
+}
+
+.reveal-content i {
+    width: 50px;
+    height: 50px;
+    color: var(--accent-primary);
+    background: rgba(249, 161, 209, 0.1);
+    padding: 12px;
+    border-radius: 50%;
+}
+
+.reveal-content h3 {
+    font-family: var(--font-head);
+    color: var(--text-main);
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.reveal-content p {
+    color: var(--accent-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+/* =========================================
+   SECRETARIAT PLACEHOLDER FIXES
+   ========================================= */
+body.light-mode .cooking-placeholder div {
+    background: rgba(216, 27, 96, 0.05) !important;
+}
+body.light-mode .cooking-placeholder h3 {
+    color: var(--text-main);
+}

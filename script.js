@@ -62,50 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- MYSTERY COMMITTEE REVEAL LOGIC ---
-    // Target: May 11, 2026, 11:11:11 AM
-    const revealDate = new Date("May 11, 2026 11:11:11+05:30").getTime();
-
-    const mysteryCard = document.getElementById('mystery-card');
-    const mysteryTitle = document.getElementById('mystery-title');
-    const mysteryCountdownStr = document.getElementById('mystery-countdown');
-    const mysteryDescText = document.getElementById('mystery-desc');
-    const mysteryBg = document.getElementById('mystery-bg');
-
-    // Logic Function to trigger the reveal styling
-    const triggerMysteryReveal = () => {
-        mysteryTitle.innerText = "Harry Potter Council";
-        mysteryTitle.style.color = "var(--accent-primary)";
-        mysteryDescText.innerText = "Magic, Politics, and the Wizarding World.";
-        mysteryBg.style.backgroundImage = "url('https://images.unsplash.com/photo-1618944847023-38aa001235f0?q=80&w=1000')";
-        mysteryBg.style.filter = "grayscale(0%) brightness(0.6)"; 
-        mysteryCard.setAttribute('data-title', 'Harry Potter: Wizarding World Crisis');
-        mysteryCard.setAttribute('data-desc', 'A fantasy crisis committee set in the wizarding world. Deliberate over magical laws, dark threats, wizarding relations, and the future of Hogwarts. Muggles need not apply.');
-    };
-
-    if (mysteryCard) {
-        // Immediate check on load incase date is already past
-        if (new Date().getTime() >= revealDate) {
-            triggerMysteryReveal();
-        } else {
-            const mysteryTimer = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = revealDate - now;
-
-                if (distance <= 0) {
-                    clearInterval(mysteryTimer);
-                    triggerMysteryReveal();
-                } else {
-                    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const s = Math.floor((distance % (1000 * 60)) / 1000);
-                    mysteryCountdownStr.innerText = `${d}d ${h}h ${m}m ${s}s`;
-                }
-            }, 1000);
-        }
-    }
-
 
     // 2. Preloader Logic
     const preloader = document.getElementById('preloader');
@@ -236,19 +192,81 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { threshold: 0.1 });
     document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
 
-    // 9. Bulletproof Modal Logic
+    // 9. UPGRADED: Dynamic Modal Logic
     const modal = document.getElementById('committee-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalDesc = document.getElementById('modal-desc');
+    
+    // Background Guide Elements
+    const bgStatus = document.getElementById('bg-status');
+    const bgLinkBtn = document.getElementById('modal-bg-link');
+    
+    // EB Elements
+    const chairName = document.getElementById('chair-name');
+    const chairImg = document.getElementById('chair-img');
+    const chairIcon = document.getElementById('chair-icon');
+    
+    const viceName = document.getElementById('vice-name');
+    const viceImg = document.getElementById('vice-img');
+    const viceIcon = document.getElementById('vice-icon');
 
     document.querySelectorAll('.comm-card').forEach(card => {
         card.addEventListener('click', () => {
-            modalTitle.innerText = card.getAttribute('data-title');
+            const title = card.getAttribute('data-title');
+            modalTitle.innerText = title;
             modalDesc.innerHTML = card.getAttribute('data-desc');
 
+            // --- 1. BACKGROUND GUIDE LOGIC ---
+            const bgLink = card.getAttribute('data-bg-link');
+            if (bgLink && bgLink.trim() !== "") {
+                bgStatus.innerText = "Available Now";
+                bgStatus.style.color = "#4CAF50"; // Green for available
+                bgLinkBtn.href = bgLink;
+                bgLinkBtn.style.opacity = "1";
+                bgLinkBtn.style.cursor = "pointer";
+                bgLinkBtn.removeAttribute('disabled');
+            } else {
+                bgStatus.innerText = "Releasing Soon";
+                bgStatus.style.color = "var(--accent-primary)";
+                bgLinkBtn.removeAttribute('href');
+                bgLinkBtn.style.opacity = "0.5";
+                bgLinkBtn.style.cursor = "not-allowed";
+                bgLinkBtn.setAttribute('disabled', 'true');
+            }
+
+            // --- 2. EXECUTIVE BOARD LOGIC ---
+            // Format title to match your image filenames (e.g., "UNGA - DISEC" becomes "UNGA-DISEC")
+            const sanitizedFileName = title.replace(/\s+/g, ''); 
+            
+            const chair = card.getAttribute('data-chair');
+            if (chair && chair.trim() !== "") {
+                chairName.innerText = chair;
+                chairImg.src = `EB/chairperson/${sanitizedFileName}.jpg`; // Image Path mapping
+                chairImg.style.display = "block";
+                chairIcon.style.display = "none";
+            } else {
+                chairName.innerText = "To Be Revealed";
+                chairImg.style.display = "none";
+                chairIcon.style.display = "inline-block";
+            }
+
+            const vice = card.getAttribute('data-vice');
+            if (vice && vice.trim() !== "") {
+                viceName.innerText = vice;
+                viceImg.src = `EB/vice-chairperson/${sanitizedFileName}.jpg`; // Image Path mapping
+                viceImg.style.display = "block";
+                viceIcon.style.display = "none";
+            } else {
+                viceName.innerText = "To Be Revealed";
+                viceImg.style.display = "none";
+                viceIcon.style.display = "inline-block";
+            }
+
+            // Open Modal
             modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Stop background scroll
+            document.body.style.overflow = 'hidden'; 
             requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('show')));
+            lucide.createIcons(); // Refresh icons inside modal
         });
     });
 
@@ -318,4 +336,55 @@ document.addEventListener("DOMContentLoaded", () => {
             window.closeModal();
         }
     });
+
+    // ==========================================
+    // --- BULLETPROOF SECRETARIAT MODAL LOGIC ---
+    // ==========================================
+    const secModalBtn = document.getElementById('open-secretariat-modal');
+    const secModal = document.getElementById('secretariat-modal');
+    const secCloseBtn = document.querySelector('.sec-close-btn');
+
+    if (secModalBtn && secModal) {
+        // Open Modal
+        secModalBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default behavior
+            secModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Stop background scrolling
+            
+            // Force browser reflow to ensure the fade-in animation triggers
+            void secModal.offsetWidth; 
+            secModal.classList.add('show');
+            lucide.createIcons(); // Load any icons inside the modal
+        });
+
+        // Reusable Close Function
+        const closeSecModal = () => {
+            secModal.classList.remove('show');
+            setTimeout(() => {
+                secModal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            }, 300); // Matches CSS transition time
+        };
+
+        // Close Modal via 'X' Button
+        if (secCloseBtn) {
+            secCloseBtn.addEventListener('click', closeSecModal);
+        }
+
+        // Close Modal via clicking the dark background outside
+        window.addEventListener('click', (e) => {
+            if (e.target === secModal) {
+                closeSecModal();
+            }
+        });
+
+        // Close Modal via Escape Key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && secModal.style.display === 'flex') {
+                closeSecModal();
+            }
+        });
+    } else {
+        console.error("Error: Secretariat modal elements not found.");
+    }
 });
